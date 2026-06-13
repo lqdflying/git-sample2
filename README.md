@@ -10,3 +10,5 @@
 - `feature-b` - feature B development (merged)
 - `hotfix`   - critical bug fix (merged)
 ## Environment Setup\n\nCopy .env.example to .env
+## API Documentation
+- GET /api/users
