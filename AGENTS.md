@@ -2,6 +2,10 @@
 
 > This file provides agent-facing context for the `git-sample` repository.
 > Instructions here take precedence over any generic conventions.
+>
+> **Parent rules**: See `/home/opc/AGENTS.md` for global agent rules that apply
+> to all projects under `/home/opc/` (e.g. image URL handling). This file
+> supplements and overrides those rules only where explicitly stated.
 
 ---
 
