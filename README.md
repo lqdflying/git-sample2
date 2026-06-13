@@ -9,3 +9,4 @@
 - `feature-a` - feature A development (merged)
 - `feature-b` - feature B development (merged)
 - `hotfix`   - critical bug fix (merged)
+## Environment Setup\n\nCopy .env.example to .env
