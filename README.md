@@ -390,7 +390,7 @@ git branch -vv
 | `feature/unpushed` | `origin/feature/unpushed` | `[ahead 3]` | 3 commits exist locally but not on `origin` |
 | `feature/only-on-origin` | `upstream/feature/only-on-origin` | `[ahead 2]` | Exists on `origin` but has 2 extra commits vs `upstream` |
 | `feature/only-on-upstream` | `origin/feature/only-on-upstream` | `[ahead 2]` | Exists on `upstream` but has 2 extra commits vs `origin` |
-| `feature/mixed-sync` | `origin/feature/mixed-sync` | `[ahead 2]` | Part 2 pushed to `upstream` only; part 3 not pushed anywhere |
+| `feature/mixed-sync` | `origin/feature/mixed-sync` | `[ahead 3]` | Part 2 pushed to `upstream` only; parts 3+ not on `origin` |
 
 ### Behind Remote
 
