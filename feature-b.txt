@@ -1,1 +1,2 @@
 feature-b work
+feature-b update 1
