@@ -8,10 +8,9 @@
 ## Purpose
 
 This repository is a **hands-on Git workflow demonstration and teaching tool**.
-It simulates a real multi-contributor project with complex branching, merging,
-conflict resolution, rebasing, cherry-picking, stashing, tagging, and multi-remote
-configurations. It is designed as a reference repo for learning Git commands
-and understanding what real-world Git history looks like.
+It simulates real-world Git scenarios: multi-remote setups, branching with
+varying remote presence, merging (fast-forward & 3-way), conflict resolution,
+rebasing, cherry-picking, stashing, tagging, and ahead/behind remote states.
 
 **Do not treat this as production code.** The source files are intentionally
 minimal stubs (e.g. `function login() {}`) meant only to generate commit diffs.
@@ -23,18 +22,46 @@ minimal stubs (e.g. `function login() {}`) meant only to generate commit diffs.
 Two GitHub remotes are configured and actively pushed:
 
 | Remote   | URL                                         | Role                  |
-|----------|---------------------------------------------|-----------------------|
+|----------|---------------------------------------------|----------------------|
 | `origin` | `git@github.com:lqdflying/git-sample1.git`  | Primary / your fork   |
 | `upstream` | `git@github.com:lqdflying/git-sample2.git`| Upstream / original   |
 
-Both remotes contain identical branch and tag state.
-
 ### Push Policy
-When adding new simulated content, push **all branches and tags to both remotes**:
+- `master` is kept in sync on **both** remotes.
+- Other branches may be selectively pushed to demonstrate remote presence patterns.
 
 ```bash
-git push origin --all && git push origin --tags
-git push upstream --all && git push upstream --tags
+# Push all local branches to a remote
+git push origin --all
+
+# Push tags
+git push origin --tags
+```
+
+---
+
+## Branch Layout (Current — 4 Branches)
+
+The repo is intentionally simplified to **4 branches**, each demonstrating a
+different remote relationship:
+
+| Branch | Local | `origin` | `upstream` | Lesson |
+|--------|-------|----------|------------|--------|
+| `master` | ✅ | ✅ | ✅ | Multi-remote sync |
+| `feature/single-remote` | ✅ | ✅ | ❌ | Single-remote branch |
+| `feature/local-only` | ✅ | ❌ | ❌ | Local-only branch |
+| `feature/remote-only` | ❌ | ✅ | ❌ | Remote-only branch (no local) |
+
+### Checking remote presence
+```bash
+git branch -a          # All branches (local + remote)
+git branch -vv         # Local branches with tracking info
+git branch -r          # Remote branches only
+```
+
+### Checkout a remote-only branch locally
+```bash
+git checkout -b feature/remote-only origin/feature/remote-only
 ```
 
 ---
@@ -60,40 +87,16 @@ git commit -m "type(scope): description"
 
 ---
 
-## Branching Strategy (Git Flow Lite)
-
-| Branch Prefix     | Purpose                                   | Merge Target    |
-|-------------------|-------------------------------------------|-----------------|
-| `master`          | Production releases                       | —               |
-| `develop`         | Integration branch for features           | —               |
-| `feature/*`       | New features / experiments                | `develop`       |
-| `hotfix`          | Critical production fixes                 | `master`        |
-| `security-patch-*`| Security patches (hotfix variant)         | `master` + `develop` |
-| `release/v*.*.*`  | Release preparation (version bump, docs)  | `master`        |
-
-### Merge Conventions
-- Use `--no-ff` for merges into `master` and `develop` to preserve branch topology.
-- Use `--ff-only` only when explicitly demonstrating fast-forward merges.
-- Use `--squash` when demonstrating squash-merge workflows.
-- Merge commit messages should mimic GitHub PR merge messages:
-  ```
-  Merge pull request #N from lqdflying/branch-name
-
-  feat(scope): description
-  ```
-
----
-
 ## Tags
 
-All releases are annotated tags (`git tag -a`) on `master` or `develop`:
+All releases are annotated tags (`git tag -a`) on `master`:
 
 | Tag           | Target    | Description                        |
 |---------------|-----------|------------------------------------|
 | `v0.9.0`      | `fdaa65b` | Pre-release before feature merges  |
 | `v1.0.0`      | `master`  | MVP with auth and payment          |
 | `v1.1.0`      | `master`  | First develop → master release     |
-| `v1.1.0-beta` | `develop` | Beta snapshot                      |
+| `v1.1.0-beta` | old `develop` | Beta snapshot                |
 | `v1.2.0`      | `master`  | i18n, audit log, rate limiting     |
 
 When creating a new release tag, use `-a` and push to both remotes.
@@ -115,20 +118,6 @@ git push origin refs/notes/*
 
 ---
 
-## Worktree
-
-A secondary worktree exists at `../git-sample-worktree` tracking `feature-a`.
-
-```bash
-# List worktrees
-git worktree list
-
-# Add a new worktree (if needed for demonstrations)
-git worktree add ../git-sample-worktree-<branch> <branch>
-```
-
----
-
 ## Agent Guidelines
 
 1. **Preserve the simulation nature** — do not refactor code for correctness.
@@ -137,15 +126,17 @@ git worktree add ../git-sample-worktree-<branch> <branch>
 2. **Always simulate realistic authorship** — override `GIT_AUTHOR_*` when
    committing new simulated work.
 
-3. **Maintain merge commit style** — PR-style merge messages with `#N` numbering.
+3. **Keep to 4 branches** — if adding new scenarios, replace an existing
+   feature branch rather than proliferating branches.
 
 4. **Keep the README updated** — if new workflows are added, document them
    in `README.md`.
 
-5. **Push both remotes** — never leave commits unpushed on GitHub.
-
-6. **Branch cleanup** — do not delete feature branches locally; they serve as
-   teaching artifacts visible on GitHub.
+5. **Push appropriately** —
+   - `master` → both remotes
+   - `feature/single-remote` → `origin` only
+   - `feature/local-only` → do not push (demonstrates local-only)
+   - `feature/remote-only` → push then delete local (demonstrates remote-only)
 
 ---
 
@@ -161,14 +152,14 @@ git branch -vv
 # Reflog (safety net)
 git reflog
 
-# Diff between master and develop
-git diff master..develop --stat
-
 # Blame on a simulated file
 git blame src/auth.js
 
 # Show notes
 git log --notes --oneline
+
+# See commits a local branch has that origin doesn't
+git log origin/feature/single-remote..feature/single-remote --oneline
 ```
 
 ---
